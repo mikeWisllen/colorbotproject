@@ -1,0 +1,9 @@
+2025-03-25 17:26:51,851 - INFO - Executando teste de hardware...
+2025-03-25 17:26:51,861 - INFO - \u2705 Captura de tela funcionando
+2025-03-25 17:26:51,962 - INFO - \u2705 Controle do mouse funcionando
+2025-03-25 17:26:51,962 - INFO - \u2705 M�dulo de teclado carregado (pressione ESC para testar)
+2025-03-25 17:26:51,962 - ERROR - \u274c Falha no teclado: wait() got an unexpected keyword argument 'timeout'
+2025-03-25 17:26:51,966 - INFO - Alvo HSV: [140 255 153] | Limites: [ 80 195  93] - [179  59 213]
+2025-03-25 17:26:57,274 - INFO - Bot ativado
+2025-03-25 17:28:03,286 - INFO - Bot desativado
+ra r
