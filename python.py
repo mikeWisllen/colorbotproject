@@ -6,7 +6,16 @@ import random
 from mss import mss
 from time import sleep, time
 import time
-import kernel_camouflage
+import logging
+import sys
+import os
+
+# Import the camouflage module
+from kernel_camouflage import KernelCamouflage, add_kernel_camouflage, implement_kernel_camouflage
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 # Configuration settings
 class Config:
@@ -37,6 +46,7 @@ class Config:
             (1, 10), (-1, 11), (2, 12), (-2, 13), (1, 14)
         ]
     }
+
 
 class AimbotController:
     def __init__(self):
@@ -70,12 +80,14 @@ class AimbotController:
         
         # Lock power (will be dynamically adjusted)
         self.lock_power = Config.LOCK_POWER
+        
+        logger.info("AimbotController initialized")
 
     def apply_recoil_control(self):
         if not self.firing and keyboard.is_pressed('mouse left'):
             self.firing = True
             self.last_shot_time = time()
-            print(f"Recoil control activated for {self.current_weapon}")
+            logger.info(f"Recoil control activated for {self.current_weapon}")
         elif self.firing and not keyboard.is_pressed('mouse left'):
             self.firing = False
             return
@@ -151,7 +163,7 @@ class AimbotController:
                     pyautogui.click(_pause=False)
 
     def run(self):
-        print("""
+        logger.info("""
         Valorant Advanced Aimbot
         -----------------------
         Keys:
@@ -165,17 +177,17 @@ class AimbotController:
                 # Controls
                 if keyboard.is_pressed(Config.ACTIVATE_KEY):
                     self.active = not self.active
-                    print(f"Aimbot {'activated' if self.active else 'deactivated'}")
+                    logger.info(f"Aimbot {'activated' if self.active else 'deactivated'}")
                     sleep(0.3)
                     
                 if keyboard.is_pressed(Config.RECOIL_KEY):
                     self.recoil_active = not self.recoil_active
-                    print(f"Recoil control {'activated' if self.recoil_active else 'deactivated'}")
+                    logger.info(f"Recoil control {'activated' if self.recoil_active else 'deactivated'}")
                     sleep(0.3)
                     
                 if keyboard.is_pressed(Config.WEAPON_SWITCH_KEY):
                     self.current_weapon = 'phantom' if self.current_weapon == 'vandal' else 'vandal'
-                    print(f"Weapon changed to: {self.current_weapon}")
+                    logger.info(f"Weapon changed to: {self.current_weapon}")
                     sleep(0.3)
 
                 # Apply recoil control if active
@@ -210,26 +222,25 @@ class AimbotController:
                 sleep(0.01)  # Reduced from 0.005 to balance CPU and response
 
 
-def main_program():
-    print("Starting the main program...")
-    for i in range(5):
-        print(f"Running iteration {i+1}")
-        time.sleep(2)
-    print("Main program completed.")
-
+# Apply kernel camouflage to the AimbotController
+AimbotController = add_kernel_camouflage(AimbotController)
 
 def main():
-    # Initialize kernel camouflage
-    camouflage = kernel_camouflage.KernelCamouflage(target_process_name="main.exe")
-    camouflage.start()
+    logger.info("Starting Valorant Advanced Aimbot with Kernel Camouflage protection")
     
     try:
-        # Start the aimbot controller
+        # Create and run the aimbot controller
+        # The kernel camouflage will be automatically started and stopped
+        # by the decorated AimbotController
         aimbot = AimbotController()
         aimbot.run()
+    except Exception as e:
+        logger.error(f"Error in main program: {e}")
+        import traceback
+        traceback.print_exc()
     finally:
-        # Always stop camouflage when done
-        camouflage.stop()
+        logger.info("Program terminated")
 
-    if __name__ == "__main__":
-        main()
+
+if __name__ == "__main__":
+    main()
