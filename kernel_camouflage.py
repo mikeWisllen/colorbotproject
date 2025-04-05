@@ -80,13 +80,12 @@ class KernelCamouflage:
 
     def stop(self):
         self.running = False
-        for pid in self.dummy_processes:
+        for process in self.dummy_processes:
             try:
-                process = psutil.Process(pid)
                 process.terminate()
-                logger.info(f"Terminated dummy process: {pid}")
+                logger.info(f"Terminated dummy process: {process.pid}")
             except Exception as e:
-                logger.error(f"Failed to terminate dummy process {pid}: {e}")
+                logger.error(f"Failed to terminate dummy process: {e}")
         logger.info("[+] Camouflage system stopped")
 
     def _generate_random_name(self, length=8):
@@ -145,10 +144,10 @@ class KernelCamouflage:
             while self.running:
                 name = self._generate_random_name()
                 # Creating a simple dummy process (Python subprocess)
-                cmd = f"python -c \"import time; time.sleep(30)\"" 
+                cmd = f"python -c \"import time; time.sleep(300)\"" 
                 try:
                     process = subprocess.Popen(cmd, shell=True)
-                    self.dummy_processes.append(process.pid)
+                    self.dummy_processes.append(process)
                     logger.info(f"Created dummy process: {process.pid}")
                 except Exception as e:
                     logger.error(f"Failed to create dummy process: {e}")
